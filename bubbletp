@@ -1,23 +1,64 @@
+local UIS = game:GetService("UserInputService")
 local plr = game.Players.LocalPlayer
+local isToggled = false
 
-local teleportPositions = {
-    Vector3.new(-217, 9, -502),
-    Vector3.new(-212, 9, -64),
-    Vector3.new(-1, 9, -287),
-    Vector3.new(212, 9, -64),
-    Vector3.new(207, 9, -502)
-}
+UIS.InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent then
+        if input.KeyCode == Enum.KeyCode.V then
+            isToggled = not isToggled  -- Toggle the boolean value
 
-local presetPosition = Vector3.new(12200, 500, 1200)
+            if isToggled then
+                print("Toggle ON")
+            else
+                print("Toggle OFF")
+            end
+        end
+    end
+end)
+
+local basePresetPosition = Vector3.new(1200, 500, 1200)
+local xOffset = 100
+local numPositions = 5  -- Change this value as needed
+
+local presetPositions = {}
+
+for i = 1, numPositions do
+    table.insert(presetPositions, basePresetPosition + Vector3.new(xOffset * i, 0, 0))
+end
+
+local fallbackPosition = Vector3.new(2000, 666, 1250)
+
+local function teleportPlayer(position)
+    plr.Character:SetPrimaryPartCFrame(CFrame.new(position))
+end
 
 while true do
     if isToggled then
-        for _, position in ipairs(teleportPositions) do
-            plr.Character:SetPrimaryPartCFrame(CFrame.new(position))
-            wait(1)  -- Adjust the delay between position teleports as needed
+        local bubbleSpotsPath = game.Workspace.Map.BubbleSpots:GetChildren()
+        local foundHitbox = false
+        
+        for _, bubbleSpot in ipairs(bubbleSpotsPath) do
+            if bubbleSpot:IsA("Model") and bubbleSpot:FindFirstChild("BubbleOxygen") then
+                local bubbleOxygen = bubbleSpot.BubbleOxygen
+                local hitbox = bubbleOxygen:FindFirstChild("Hitbox")
+                if hitbox then
+                    foundHitbox = true
+                    local hitboxPosition = hitbox.Position
+                    teleportPlayer(hitboxPosition)
+                    wait(1)  -- Adjust the delay between teleportations as needed
+
+                    for _, position in ipairs(presetPositions) do
+                        teleportPlayer(position)
+                        wait(6)  -- Adjust the delay after teleporting to each preset position as needed
+                    end
+                end
+            end
         end
         
-        plr.Character:SetPrimaryPartCFrame(CFrame.new(presetPosition))
+        if not foundHitbox then
+            teleportPlayer(fallbackPosition)
+            wait(6)  -- Adjust the delay after teleporting to the fallback position as needed
+        end
     end
     wait()  -- Adjust the delay as needed
 end
