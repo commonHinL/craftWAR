@@ -1,0 +1,23 @@
+local plr = game.Players.LocalPlayer
+
+local teleportPositions = {
+    Vector3.new(-217, 9, -502),
+    Vector3.new(-212, 9, -64),
+    Vector3.new(-1, 9, -287),
+    Vector3.new(212, 9, -64),
+    Vector3.new(207, 9, -502)
+}
+
+local presetPosition = Vector3.new(12200, 500, 1200)
+
+while true do
+    if isToggled then
+        for _, position in ipairs(teleportPositions) do
+            plr.Character:SetPrimaryPartCFrame(CFrame.new(position))
+            wait(1)  -- Adjust the delay between position teleports as needed
+        end
+        
+        plr.Character:SetPrimaryPartCFrame(CFrame.new(presetPosition))
+    end
+    wait()  -- Adjust the delay as needed
+end
