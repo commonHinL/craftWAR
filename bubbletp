@@ -1,25 +1,9 @@
 print("bubbletp")
-local UIS = game:GetService("UserInputService")
 local plr = game.Players.LocalPlayer
-local isToggled = false
-
-UIS.InputBegan:Connect(function(input, gameProcessedEvent)
-    if not gameProcessedEvent then
-        if input.KeyCode == Enum.KeyCode.V then
-            isToggled = not isToggled  -- Toggle the boolean value
-
-            if isToggled then
-                print("Toggle ON")
-            else
-                print("Toggle OFF")
-            end
-        end
-    end
-end)
 
 local basePresetPosition = Vector3.new(1200, 500, 1200)
 local xOffset = 100
-local numPositions = 5  -- Change this value as needed
+local numPositions = 5
 
 local presetPositions = {}
 
@@ -33,33 +17,28 @@ local function teleportPlayer(position)
     plr.Character:SetPrimaryPartCFrame(CFrame.new(position))
 end
 
-while true do
-    if isToggled then
-        local bubbleSpotsPath = game.Workspace.Map.BubbleSpots:GetChildren()
-        local foundHitbox = false
-        
-        for _, bubbleSpot in ipairs(bubbleSpotsPath) do
-            if bubbleSpot:IsA("Model") and bubbleSpot:FindFirstChild("BubbleOxygen") then
-                local bubbleOxygen = bubbleSpot.BubbleOxygen
-                local hitbox = bubbleOxygen:FindFirstChild("Hitbox")
-                if hitbox then
-                    foundHitbox = true
-                    local hitboxPosition = hitbox.Position
-                    teleportPlayer(hitboxPosition)
-                    wait(1)  -- Adjust the delay between teleportations as needed
+local bubbleSpotsPath = game.Workspace.Map.BubbleSpots:GetChildren()
+local foundHitbox = false
 
-                    for _, position in ipairs(presetPositions) do
-                        teleportPlayer(position)
-                        wait(6)  -- Adjust the delay after teleporting to each preset position as needed
-                    end
-                end
+for _, bubbleSpot in ipairs(bubbleSpotsPath) do
+    if bubbleSpot:IsA("Model") and bubbleSpot:FindFirstChild("BubbleOxygen") then
+        local bubbleOxygen = bubbleSpot.BubbleOxygen
+        local hitbox = bubbleOxygen:FindFirstChild("Hitbox")
+        if hitbox then
+            foundHitbox = true
+            local hitboxPosition = hitbox.Position
+            teleportPlayer(hitboxPosition)
+            wait(1)
+
+            for _, position in ipairs(presetPositions) do
+                teleportPlayer(position)
+                wait(6)
             end
         end
-        
-        if not foundHitbox then
-            teleportPlayer(fallbackPosition)
-            wait(6)  -- Adjust the delay after teleporting to the fallback position as needed
-        end
     end
-    wait()  -- Adjust the delay as needed
+end
+
+if not foundHitbox then
+    teleportPlayer(fallbackPosition)
+    wait(6)
 end
