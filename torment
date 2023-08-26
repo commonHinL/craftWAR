@@ -100,3 +100,4 @@ while true do
     TeleportLocalPlayer()
     wait(1.5)
 end
+end
