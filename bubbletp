@@ -33,13 +33,13 @@ while not foundHitbox do
 
                 for _, position in ipairs(presetPositions) do
                     teleportPlayer(position)
-                    wait(5)
+                    wait(3)
                 end
             end
         end
     end
     if not foundHitbox then
-        wait(2)  -- Delay for 2 seconds before the next check
+        wait(0.1)  -- Delay for 2 seconds before the next check
     end
 end
 
