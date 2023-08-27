@@ -20,21 +20,26 @@ end
 local bubbleSpotsPath = game.Workspace.Map.BubbleSpots:GetChildren()
 local foundHitbox = false
 
-for _, bubbleSpot in ipairs(bubbleSpotsPath) do
-    if bubbleSpot:IsA("Model") and bubbleSpot:FindFirstChild("BubbleOxygen") then
-        local bubbleOxygen = bubbleSpot.BubbleOxygen
-        local hitbox = bubbleOxygen:FindFirstChild("Hitbox")
-        if hitbox then
-            foundHitbox = true
-            local hitboxPosition = hitbox.Position
-            teleportPlayer(hitboxPosition)
-            wait(1)
+while not foundHitbox do
+    for _, bubbleSpot in ipairs(bubbleSpotsPath) do
+        if bubbleSpot:IsA("Model") and bubbleSpot:FindFirstChild("BubbleOxygen") then
+            local bubbleOxygen = bubbleSpot.BubbleOxygen
+            local hitbox = bubbleOxygen:FindFirstChild("Hitbox")
+            if hitbox then
+                foundHitbox = true
+                local hitboxPosition = hitbox.Position
+                teleportPlayer(hitboxPosition)
+                wait(1)
 
-            for _, position in ipairs(presetPositions) do
-                teleportPlayer(position)
-                wait(5)
+                for _, position in ipairs(presetPositions) do
+                    teleportPlayer(position)
+                    wait(5)
+                end
             end
         end
+    end
+    if not foundHitbox then
+        wait(2)  -- Delay for 2 seconds before the next check
     end
 end
 
