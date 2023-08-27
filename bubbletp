@@ -15,11 +15,16 @@ local function teleportPlayer(position)
     plr.Character:SetPrimaryPartCFrame(CFrame.new(position))
 end
 
-local bubbleSpotsPath = game.Workspace.Map.BubbleSpots:GetChildren()
+local bubbleSpotsPath = game.Workspace.Map:FindFirstChild("BubbleSpots")
 local foundHitbox = false
 
+while not bubbleSpotsPath do
+    wait(2)  -- Delay for 2 seconds before checking again
+    bubbleSpotsPath = game.Workspace.Map:FindFirstChild("BubbleSpots")
+end
+
 while not foundHitbox do
-    for _, bubbleSpot in ipairs(bubbleSpotsPath) do
+    for _, bubbleSpot in ipairs(bubbleSpotsPath:GetChildren()) do
         if bubbleSpot:IsA("Model") and bubbleSpot:FindFirstChild("BubbleOxygen") then
             local bubbleOxygen = bubbleSpot.BubbleOxygen
             local hitbox = bubbleOxygen:FindFirstChild("Hitbox")
@@ -31,7 +36,7 @@ while not foundHitbox do
 
                 for _, position in ipairs(presetPositions) do
                     teleportPlayer(position)
-                    wait(6)
+                    wait(5)
                 end
             end
         end
